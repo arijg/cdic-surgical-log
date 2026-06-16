@@ -474,7 +474,7 @@
      Target is just under 11in so rounding never spills to a 2nd page.
      min-height is temporarily removed so we measure true content height,
      not the 11in min-height used for the preview. */
-  const PAGE_FIT_PX = 11 * 96 - 16;
+  const PAGE_FIT_PX = 11 * 96 - 48; // ~0.5in safety so a sheet never tips onto a 2nd page
 
   function fitToPage(el, floor) {
     el.style.zoom = "";
@@ -495,7 +495,7 @@
     ov.classList.add("open");
     ov.setAttribute("aria-hidden", "false");
     $("#overlayTitle").textContent = "Surgical log — preview";
-    fitNote();
+    fitWhenReady(fitNote);
     ov.querySelector(".overlay__scroll").scrollTop = 0;
   }
   function openConsents() {
@@ -507,11 +507,20 @@
     ov.classList.add("mode-consents", "open");
     ov.setAttribute("aria-hidden", "false");
     $("#overlayTitle").textContent = "Consent forms — preview";
-    fitConsentPages();
+    fitWhenReady(fitConsentPages);
     ov.querySelector(".overlay__scroll").scrollTop = 0;
   }
   function fitConsentPages() {
     $$("#consentDoc .consent-page").forEach((pg) => fitToPage(pg, 0.45));
+  }
+  // Re-run a fit once web fonts are ready and a layout frame has flushed, since
+  // text height (and therefore the scale needed) changes when the fonts load.
+  function fitWhenReady(fitFn) {
+    const rerun = () => requestAnimationFrame(fitFn);
+    fitFn();
+    rerun();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(rerun);
+    setTimeout(rerun, 400); // catch a late font swap / layout settle
   }
   function closePreview() {
     const ov = $("#previewOverlay");
@@ -574,9 +583,19 @@
     $("#surgeryDate").addEventListener("change", () => updateDocTitle($("#patientName").value.trim(), fmtDate($("#surgeryDate").value)));
 
     window.addEventListener("beforeprint", () => {
-      if (!$("#previewOverlay").classList.contains("mode-consents")) buildNote();
+      // Re-fit at print time, when fonts are guaranteed loaded, so a near-boundary
+      // page can never tip onto a second sheet.
+      if ($("#previewOverlay").classList.contains("mode-consents")) {
+        fitConsentPages();
+      } else {
+        buildNote();
+        fitNote();
+      }
     });
     document.addEventListener("keydown", (e) => { if (e.key === "Escape") closePreview(); });
+
+    // Deep link: opening …/index.html#consents jumps straight to the consent packet
+    if (location.hash === "#consents") openConsents();
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
