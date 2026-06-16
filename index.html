@@ -27,6 +27,7 @@
   </div>
   <div class="topbar__actions">
     <button class="btn btn--ghost" id="resetBtn" type="button">Reset</button>
+    <button class="btn btn--ghost" id="printConsentsBtn" type="button">Print consents</button>
     <button class="btn btn--primary" id="previewBtn" type="button">Preview &amp; Export PDF</button>
   </div>
 </header>
@@ -197,7 +198,7 @@
 <!-- ───────────────────────── Preview / export ───────────────────────── -->
 <div class="overlay" id="previewOverlay" aria-hidden="true">
   <div class="overlay__bar">
-    <span class="overlay__title">Document preview</span>
+    <span class="overlay__title" id="overlayTitle">Document preview</span>
     <div class="overlay__actions">
       <button class="btn btn--ghost" id="closePreview" type="button">Back to form</button>
       <button class="btn btn--primary" id="savePdf" type="button">Save as PDF</button>
@@ -205,9 +206,11 @@
   </div>
   <div class="overlay__scroll">
     <article class="note" id="note"></article>
+    <div class="consent-doc" id="consentDoc"></div>
   </div>
 </div>
 
+<script src="assets/consents.js"></script>
 <script src="assets/app.js"></script>
 </body>
 </html>

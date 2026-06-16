@@ -483,20 +483,46 @@
   function openPreview() {
     buildNote();
     const ov = $("#previewOverlay");
+    ov.classList.remove("mode-consents");
     ov.classList.add("open");
     ov.setAttribute("aria-hidden", "false");
+    $("#overlayTitle").textContent = "Surgical log — preview";
     fitNote();
     ov.querySelector(".overlay__scroll").scrollTop = 0;
   }
+  function openConsents() {
+    if (typeof window.buildConsentPacket !== "function") { alert("Consent forms failed to load."); return; }
+    const name = $("#patientName").value.trim();
+    const dateStr = fmtDate($("#surgeryDate").value);
+    $("#consentDoc").innerHTML = window.buildConsentPacket(name, dateStr);
+    const ov = $("#previewOverlay");
+    ov.classList.add("mode-consents", "open");
+    ov.setAttribute("aria-hidden", "false");
+    $("#overlayTitle").textContent = "Consent forms — preview";
+    fitConsentPages();
+    ov.querySelector(".overlay__scroll").scrollTop = 0;
+  }
+  function fitConsentPages() {
+    const pageH = 11 * 96;
+    $$("#consentDoc .consent-page").forEach((pg) => {
+      pg.style.zoom = "";
+      const h = pg.scrollHeight;
+      if (h > pageH) pg.style.zoom = Math.max(0.5, pageH / h);
+    });
+  }
   function closePreview() {
     const ov = $("#previewOverlay");
-    ov.classList.remove("open");
+    ov.classList.remove("open", "mode-consents");
     ov.setAttribute("aria-hidden", "true");
   }
   function savePdf() {
-    buildNote();
-    fitNote();
-    window.print();
+    if ($("#previewOverlay").classList.contains("mode-consents")) {
+      window.print();
+    } else {
+      buildNote();
+      fitNote();
+      window.print();
+    }
   }
 
   /* ---------- Reset ---------- */
@@ -536,6 +562,7 @@
 
     $("#previewBtn").addEventListener("click", openPreview);
     $("#previewBtn2").addEventListener("click", openPreview);
+    $("#printConsentsBtn").addEventListener("click", openConsents);
     $("#resetBtn").addEventListener("click", resetAll);
     $("#closePreview").addEventListener("click", closePreview);
     $("#savePdf").addEventListener("click", savePdf);
@@ -543,7 +570,9 @@
     $("#patientName").addEventListener("input", (e) => updateDocTitle(e.target.value.trim(), fmtDate($("#surgeryDate").value)));
     $("#surgeryDate").addEventListener("change", () => updateDocTitle($("#patientName").value.trim(), fmtDate($("#surgeryDate").value)));
 
-    window.addEventListener("beforeprint", () => { buildNote(); });
+    window.addEventListener("beforeprint", () => {
+      if (!$("#previewOverlay").classList.contains("mode-consents")) buildNote();
+    });
     document.addEventListener("keydown", (e) => { if (e.key === "Escape") closePreview(); });
   }
 

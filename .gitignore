@@ -2,3 +2,7 @@
 .claude/
 .DS_Store
 *.log
+
+# Source workbook — kept locally only; contains patient data, never publish
+reference/*.xlsm
+reference/*.xlsx
