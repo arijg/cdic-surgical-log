@@ -1,0 +1,17 @@
+{
+  "name": "Surgical Log — Ceramic Dental Implant Centre",
+  "short_name": "Surgical Log",
+  "description": "Surgical log entry and clean PDF export. Runs entirely in the browser.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f4f5f4",
+  "theme_color": "#13343b",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

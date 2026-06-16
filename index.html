@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Surgical Log — Ceramic Dental Implant Centre</title>
+<meta name="description" content="Surgical log for the Ceramic Dental Implant Centre. Fills entirely in your browser — no data is sent anywhere." />
+<meta name="theme-color" content="#13343b" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="favicon.svg" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Surgical Log" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="assets/app.css" />
+</head>
+<body>
+
+<!-- ───────────────────────── Top bar ───────────────────────── -->
+<header class="topbar">
+  <div class="topbar__brand">
+    <span class="topbar__title">Surgical Log</span>
+    <span class="topbar__sub">Ceramic Dental Implant Centre</span>
+  </div>
+  <div class="topbar__actions">
+    <button class="btn btn--ghost" id="resetBtn" type="button">Reset</button>
+    <button class="btn btn--primary" id="previewBtn" type="button">Preview &amp; Export PDF</button>
+  </div>
+</header>
+
+<main class="app" id="app">
+  <p class="privacy-note">
+    Everything you type stays in this browser — nothing is uploaded or saved on a server.
+  </p>
+
+  <!-- 01 Patient -->
+  <section class="card" data-section="patient">
+    <div class="card__head"><span class="card__num">01</span><h2>Patient information</h2></div>
+    <div class="grid-2">
+      <label class="field">
+        <span class="field__label">Patient name</span>
+        <input class="field__input" type="text" id="patientName" placeholder="Full name" autocomplete="off" />
+      </label>
+      <label class="field">
+        <span class="field__label">Date of surgery</span>
+        <input class="field__input" type="date" id="surgeryDate" />
+      </label>
+    </div>
+  </section>
+
+  <!-- 02 Clinical review -->
+  <section class="card" data-section="clinical">
+    <div class="card__head"><span class="card__num">02</span><h2>Clinical review</h2></div>
+    <p class="card__note">
+      Medical history reviewed — no change (see attached). Current x-rays present / taken.
+      Soft tissue exam: WNL. Hard tissue exam: WNL. Patient instructed to see general dentist or
+      prosthodontist for restorative care, regular exams, periodontal evaluation, and recall as directed.
+    </p>
+    <div class="control">
+      <span class="control__label">Informed consent</span>
+      <div class="chips" data-group="consent" data-mode="toggle"></div>
+    </div>
+    <div class="control">
+      <span class="control__label">Smoking cessation</span>
+      <div class="chips" data-group="smoking" data-mode="single"></div>
+    </div>
+  </section>
+
+  <!-- 03 Premedication -->
+  <section class="card" data-section="premed">
+    <div class="card__head"><span class="card__num">03</span><h2>Premedication (in office)</h2></div>
+    <span class="control__hint">Select all that apply</span>
+    <div class="chips" data-group="premed" data-mode="multi"></div>
+    <label class="field field--inline" id="premedOtherRow" hidden>
+      <span class="field__label">Other</span>
+      <input class="field__input" type="text" id="premedOther" placeholder="specify medication / dose" autocomplete="off" />
+    </label>
+  </section>
+
+  <!-- 04 Anesthetic -->
+  <section class="card" data-section="anesthetic">
+    <div class="card__head"><span class="card__num">04</span><h2>Anesthetic</h2></div>
+    <div class="control">
+      <span class="control__label">2% Lidocaine 1:100,000 epi.</span>
+      <div class="chips" data-group="lido" data-mode="single"></div>
+    </div>
+    <div class="control">
+      <span class="control__label">3% Carbocaine</span>
+      <div class="chips" data-group="carbo" data-mode="single"></div>
+    </div>
+  </section>
+
+  <!-- 05 Extractions -->
+  <section class="card" data-section="extractions">
+    <div class="card__head"><span class="card__num">05</span><h2>Extractions <span class="card__code">D7210</span></h2></div>
+    <span class="control__hint">Tap teeth to toggle</span>
+    <div class="teeth" id="extractionTeeth"></div>
+    <p class="teeth__summary" id="extractionSummary">None selected</p>
+  </section>
+
+  <!-- 06 Implants -->
+  <section class="card" data-section="implants">
+    <div class="card__head"><span class="card__num">06</span><h2>Implants placed</h2></div>
+    <span class="control__hint">Tap teeth to toggle, then set the system &amp; size for each</span>
+    <div class="teeth" id="implantTeeth"></div>
+    <p class="teeth__summary" id="implantSummary">None selected</p>
+
+    <div class="implant-details" id="implantDetails"></div>
+
+    <div class="control" id="loadControl" hidden>
+      <span class="control__label">Load type</span>
+      <div class="chips" data-group="load" data-mode="single"></div>
+    </div>
+  </section>
+
+  <!-- 07 Prosthetics (only when loaded) -->
+  <section class="card" data-section="prosth" id="prosthSection" hidden>
+    <div class="card__head"><span class="card__num">07</span><h2>Immediate load / prosthetics</h2></div>
+    <div class="chips" data-group="prosth" data-mode="single"></div>
+    <p class="card__note card__note--strong" id="dentureNote" hidden>
+      Patient instructed not to wear for at least one week; adjustments with general dentist or prosthodontist.
+    </p>
+  </section>
+
+  <!-- 08 Bone graft -->
+  <section class="card" data-section="bonegraft">
+    <div class="card__head"><span class="card__num">08</span><h2>Bone graft</h2></div>
+    <div class="chips" data-group="bonegraft" data-mode="single"></div>
+
+    <div class="bonegraft-details" id="bonegraftDetails" hidden>
+      <span class="control__hint">Graft site — tap teeth to toggle</span>
+      <div class="teeth" id="bonegraftTeeth"></div>
+      <p class="teeth__summary" id="bonegraftSummary">None selected</p>
+
+      <div class="control">
+        <span class="control__label">Graft material</span>
+        <div class="chips" data-group="graftMaterial" data-mode="multi"></div>
+      </div>
+      <div class="control">
+        <span class="control__label">Additional procedures</span>
+        <div class="chips" data-group="graftProcedures" data-mode="multi"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 09 Post-op -->
+  <section class="card" data-section="postop">
+    <div class="card__head"><span class="card__num">09</span><h2>Post-operative</h2></div>
+    <span class="control__hint">Select all that apply</span>
+    <div class="chips" data-group="postop" data-mode="multi"></div>
+  </section>
+
+  <!-- 10 Prescriptions -->
+  <section class="card" data-section="rx">
+    <div class="card__head"><span class="card__num">10</span><h2>Prescriptions</h2></div>
+    <span class="control__hint">Select all prescribed</span>
+    <div class="chips" data-group="rx" data-mode="multi"></div>
+    <div class="control">
+      <span class="control__label">Analgesic</span>
+      <div class="chips" data-group="analgesic" data-mode="single"></div>
+    </div>
+  </section>
+
+  <!-- 11 Next visit -->
+  <section class="card" data-section="nextvisit">
+    <div class="card__head"><span class="card__num">11</span><h2>Next visit</h2></div>
+    <div class="chips" data-group="nextvisit" data-mode="toggle"></div>
+    <label class="field field--inline">
+      <span class="field__label">Notes</span>
+      <input class="field__input" type="text" id="nextVisitNotes" placeholder="optional" autocomplete="off" />
+    </label>
+  </section>
+
+  <!-- 12 Authorization -->
+  <section class="card" data-section="auth">
+    <div class="card__head"><span class="card__num">12</span><h2>Authorization</h2></div>
+    <div class="grid-2">
+      <label class="field">
+        <span class="field__label">Doctor's signature</span>
+        <input class="field__input" type="text" id="signature" />
+      </label>
+      <label class="field">
+        <span class="field__label">Date</span>
+        <input class="field__input" type="date" id="sigDate" />
+      </label>
+    </div>
+  </section>
+
+  <div class="app__footer">
+    <button class="btn btn--primary btn--lg" id="previewBtn2" type="button">Preview &amp; Export PDF</button>
+  </div>
+</main>
+
+<!-- ───────────────────────── Preview / export ───────────────────────── -->
+<div class="overlay" id="previewOverlay" aria-hidden="true">
+  <div class="overlay__bar">
+    <span class="overlay__title">Document preview</span>
+    <div class="overlay__actions">
+      <button class="btn btn--ghost" id="closePreview" type="button">Back to form</button>
+      <button class="btn btn--primary" id="savePdf" type="button">Save as PDF</button>
+    </div>
+  </div>
+  <div class="overlay__scroll">
+    <article class="note" id="note"></article>
+  </div>
+</div>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

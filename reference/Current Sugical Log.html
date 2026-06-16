@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Surgical Log — Ceramic Dental Implant Centre</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #1a1a18;
+    --ink-mid: #4a4a45;
+    --ink-soft: #8a8a82;
+    --ink-faint: #c8c8be;
+    --paper: #faf9f5;
+    --paper-warm: #f2f0e8;
+    --accent: #2a5a8c;
+    --accent-light: #e8f0f8;
+    --rule: #ddddd4;
+    --selected-bg: #1a3550;
+    --selected-text: #e8f2fc;
+    --radius: 4px;
+    --mono: 'DM Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+    --serif: 'DM Serif Display', serif;
+  }
+
+  html { background: var(--paper); }
+
+  body {
+    font-family: var(--sans);
+    font-weight: 300;
+    color: var(--ink);
+    background: var(--paper);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .page-header {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 2rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .header-left h1 {
+    font-family: var(--serif);
+    font-size: 2rem;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    line-height: 1;
+  }
+  .header-left p {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-top: 6px;
+  }
+  .header-right {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    text-align: right;
+    line-height: 1.8;
+  }
+
+  .print-bar {
+    background: var(--paper-warm);
+    border-bottom: 1px solid var(--rule);
+    padding: 0.6rem 3rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .print-bar span {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .btn-print {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    padding: 6px 18px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .btn-print:hover { opacity: 0.75; }
+  .btn-reset-all {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: transparent;
+    color: var(--ink-soft);
+    border: 1px solid var(--rule);
+    padding: 5px 14px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-reset-all:hover { border-color: var(--ink-mid); color: var(--ink); }
+
+  .form-body {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2.5rem 3rem 4rem;
+  }
+
+  .section { margin-bottom: 2.5rem; }
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--rule);
+  }
+  .section-head h2 {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: var(--ink-soft);
+  }
+  .section-number {
+    font-family: var(--serif);
+    font-size: 1rem;
+    color: var(--ink-faint);
+    font-style: italic;
+  }
+
+  .field-row {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    margin-bottom: 0.9rem;
+  }
+  .field-row label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--ink-mid);
+    min-width: 140px;
+    letter-spacing: 0.02em;
+    flex-shrink: 0;
+  }
+  .field-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--ink);
+    outline: none;
+    flex: 1;
+    padding: 3px 0;
+    transition: border-color 0.15s;
+    min-width: 0;
+  }
+  .field-input:focus { border-bottom-color: var(--accent); }
+  .field-input::placeholder { color: var(--ink-faint); }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 2rem;
+  }
+
+  .options-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--ink-mid);
+    margin-bottom: 8px;
+    letter-spacing: 0.02em;
+  }
+
+  .options-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 1rem;
+  }
+
+  .opt {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.04em;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: 6px 14px;
+    background: white;
+    color: var(--ink-mid);
+    cursor: pointer;
+    transition: all 0.12s;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .opt:hover { border-color: var(--accent); color: var(--ink); }
+  .opt.selected {
+    background: var(--selected-bg);
+    color: var(--selected-text);
+    border-color: var(--selected-bg);
+  }
+  .opt.hidden { display: none; }
+  .opt.multi-selected {
+    background: var(--accent-light);
+    color: var(--accent);
+    border-color: var(--accent);
+    font-weight: 500;
+  }
+
+  .undo-link {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 4px 0;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+    transition: color 0.12s;
+  }
+  .undo-link:hover { color: var(--ink-soft); }
+
+  .anesthetic-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .anesthetic-name {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--ink-mid);
+    min-width: 220px;
+    letter-spacing: 0.02em;
+  }
+
+  .lido-wrap {
+    transition: opacity 0.2s;
+  }
+  .lido-wrap.dimmed {
+    opacity: 0.25;
+    pointer-events: none;
+  }
+
+  .note-text {
+    font-size: 0.72rem;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  /* teeth grid */
+  .teeth-section-labels {
+    display: grid;
+    grid-template-columns: repeat(16, 1fr);
+    gap: 4px;
+    margin-bottom: 2px;
+  }
+  .teeth-arch-label {
+    grid-column: 1 / -1;
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.06em;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    margin-bottom: 2px;
+    margin-top: 8px;
+  }
+  .teeth-grid {
+    display: grid;
+    grid-template-columns: repeat(16, 1fr);
+    gap: 4px;
+    margin-bottom: 4px;
+  }
+  .tooth-btn {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: 5px 2px;
+    background: white;
+    color: var(--ink-mid);
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.1s;
+    user-select: none;
+    -webkit-user-select: none;
+    line-height: 1;
+  }
+  .tooth-btn:hover { border-color: var(--accent); color: var(--ink); }
+  .tooth-btn.selected {
+    background: var(--selected-bg);
+    color: var(--selected-text);
+    border-color: var(--selected-bg);
+  }
+  .teeth-status-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 6px;
+  }
+  .teeth-display {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--ink-soft);
+    flex: 1;
+  }
+  .teeth-clear-btn {
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 4px 0;
+    display: none;
+    transition: color 0.12s;
+  }
+  .teeth-clear-btn:hover { color: var(--ink-soft); }
+  .teeth-clear-btn.show { display: inline-block; }
+
+  /* Other input */
+  .other-input-row {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2px;
+    margin-bottom: 0.5rem;
+  }
+  .other-input-row.show { display: flex; }
+  .other-input-row span {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--ink-soft);
+    white-space: nowrap;
+  }
+  .other-input-row input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--rule);
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--ink);
+    outline: none;
+    flex: 1;
+    padding: 3px 0;
+  }
+  .other-input-row input:focus { border-bottom-color: var(--accent); }
+
+  .sig-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-top: 1rem;
+  }
+  .sig-field { display: flex; flex-direction: column; gap: 4px; }
+  .sig-field label {
+    font-size: 0.68rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .sig-field .field-input { width: 100%; }
+
+  @media print {
+    .print-bar { display: none; }
+    .page-header { background: var(--ink) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .opt.hidden { display: none !important; }
+    .opt:not(.selected):not(.multi-selected) { display: none !important; }
+    .undo-link { display: none !important; }
+    .opt.selected, .opt.multi-selected { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .tooth-btn:not(.selected) { display: none !important; }
+    .tooth-btn.selected { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .teeth-arch-label, .teeth-clear-btn { display: none !important; }
+    .teeth-grid { display: flex; flex-wrap: wrap; gap: 4px; }
+    #implant-upper-grid, #implant-lower-grid { display: flex; flex-wrap: wrap; gap: 4px; }
+    .lido-wrap.dimmed { display: none; }
+    .other-input-row span { display: none; }
+    body { background: white; }
+    .form-body { padding: 1.5rem 2rem; }
+  }
+
+  @media (max-width: 600px) {
+    .page-header { padding: 1.5rem; flex-direction: column; gap: 1rem; align-items: flex-start; }
+    .form-body { padding: 1.5rem; }
+    .two-col { grid-template-columns: 1fr; }
+    .sig-row { grid-template-columns: 1fr; }
+    .anesthetic-name { min-width: 160px; }
+    .field-row label { min-width: 110px; }
+    .teeth-grid { grid-template-columns: repeat(8, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <div class="header-left">
+    <h1>Surgical Log</h1>
+    <p>Ceramic Dental Implant Centre</p>
+  </div>
+  <div class="header-right">
+    Tap an option to select<br>
+    Others will hide automatically<br>
+    Tap again to reset
+  </div>
+</header>
+
+<div class="print-bar">
+  <span>Ready to print?</span>
+  <button class="btn-print" onclick="window.print()">Print / Save PDF</button>
+  <button class="btn-reset-all" onclick="resetAll()">Reset all selections</button>
+</div>
+
+<main class="form-body">
+
+  <!-- 01 Patient Info -->
+  <section class="section">
+    <div class="section-head">
+      <span class="section-number">01</span>
+      <h2>Patient information</h2>
+    </div>
+    <div class="two-col">
+      <div class="field-row"><label>Patient name</label><input class="field-input" type="text"></div>
+      <div class="field-row"><label>Date of surgery</label><input class="field-input" id="surgery-date" type="text"></div>
+    </div>
+  </section>
+
+  <!-- 02 X-rays -->
+  <section class="section">
+    <div class="section-head">
+      <span class="section-number">02</span>
+      <h2>Current x-rays</h2>
+    </div>
+    <p class="note-text">Current x-rays present / taken</p>
+  </section>
+
+  <!-- 03 Clinical Review -->
+  <section class="section">
+    <div class="section-head">
+      <span class="section-number">03</span>
+      <h2>Clinical review</h2>
+    </div>
+    <p class="note-text">Medical history reviewed — no change (see attached). Soft tissue exam: WNL. Hard tissue exam: WNL. Patient instructed to see general dentist or prosthodontist for restorative care, regular exams, perio eval and recall as directed.</p>
+
+    <div class="options-label">Consent</div>
+    <div class="options-group" data-group="consent" data-multi="false">
+      <button class="opt" data-value="Consent reviewed and signed by patient">Consent reviewed and signed by patient</button>
+    </div>
+
+    <div class="options-label" style="margin-top:0.25rem">Smoking cessation</div>
+    <div class="options-group" data-group="smoking" data-multi="false">
+      <button class="opt" data-value="Discussed">Discussed</button>
+      <button class="opt" data-value="Not applicable">Not applicable</button>
+    </div>
+  </section>
+
+  <!-- 04 Premedication -->
+  <section class="section">
+    <div class="section-head">
+      <span class="section-number">04</span>
+      <h2>Premedication (in office)</h2>
+    </div>
+    <div class="options-label">Select all that apply</div>
+    <div class="options-group" data-group="premed" data-multi="true">
+      <button class="opt" data-value="Amoxil 500 — 1g">Amoxil 500 — 1g</button>
+      <button class="opt" data-value="Amoxil 500 — 2g">Amoxil 500 — 2g</button>
+      <button class="opt" data-value="Cleocin 300mg">Cleocin 300mg</button>
+      <button class="opt" data-value="Motrin 600mg">Motrin 600mg</button>
+      <button class="opt" data-value="Tylenol 500mg">Tylenol 500mg</button>
+      <button class="opt" data-value="None given">None given</button>
+      <button class="opt" id="btn-premed-other" data-value="Other">Other</button>
+    </div>
+    <div class="other-input-row" id="premed-other-row">
+      <span>Other:</span>
+      <input type="text" id="premed-other-text" placeholder="specify…">
+    </div>
+  </section>
+
+  <!-- 05 Anesthetic -->
+  <section class="section">
+    <div class="section-head">
+      <span class="section-number">05</span>
+      <h2>Anesthetic type</h2>
+    </div>
+
+    <div class="lido-wrap" id="lido-wrap">
+      <div class="anesthetic-row">
+        <span class="anesthetic-name">2% Lidocaine 1:100,000 epin.</span>
+        <div class="options-group" data-group="lido" data-multi="false" style="margin-bottom:0">
+          <button class="opt" data-value="1 carpule">1 carpule</button>
+          <button class="opt" data-value="2 carpules">2 carpules</button>
+          <button class="opt" data-value="3 carpules">3 carpules</button>
+          <button class="opt" data-value="Not used">Not used</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="anesthetic-row" style="margin-top:0.5rem">
+      <span class="anesthetic-name">3% Carbocaine</span>
+      <div class="options-group" data-group="carbo" data-multi="false" style="margin-bottom:0">
+        <button class="opt" data-value="1 carpule">1 carpule</button>
+        <button class="opt" data-value="2 carpules">2 carpules</button>
+        <button class="opt" data-value="3 carpules">3 carpules</button>
+        <button class="opt" data-value="Not used">Not used</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 Extractions -->
+  <section class="section">
+    <div class="section-head">
+      <span class="section-number">06</span>
+      <h2>Extractions (D7210)</h2>
+    </div>
+    <div class="options-label">Select tooth numbers (tap to toggle)</div>
+    <p class="teeth-arch-label">Upper — 1 through 16</p>
+    <div class="teeth-grid" id="upper-grid"></div>
+    <p class="teeth-arch-label">Lower — 17 through 32</p>
+    <div class="teeth-grid" id="lower-grid"></div>
+    <div class="teeth-status-row">
+      <div class="teeth-display" id="teeth-display">None selected</div>
+      <button class="teeth-clear-btn" id="teeth-clear" onclick="clearTeeth()">↩ clear</button>
+    </div>
+  </section>
+
+  <!-- 07 Implants -->
+  <section class="section">
+    <div class="section-head">
+      <span class="section-number">07</span>
+      <h2>Implants placed</h2>
+    </div>
+    <div class="options-label">Teeth areas (tap to toggle)</div>
+    <p class="teeth-arch-label">Upper — 1 through 16</p>
+    <div class="teeth-grid" id="implant-upper-grid"></div>
+    <p class="teeth-arch-label">Lower — 17 through 32</p>
+    <div class="teeth-grid" id="implant-lower-grid"></div>
+    <div class="teeth-status-row">
+      <div class="teeth-display" id="implant-teeth-display">None selected</div>
+      <button class="teeth-clear-btn" id="implant-teeth-clear" onclick="clearImplantTeeth()">↩ clear</button>
+    </div>
+    <div class="options-label" style="margin-top:1rem">Load type</div>
+    <div class="options-group" data-group="load" data-multi="false">
+      <button class="opt" data-value="Loaded">Loaded</button>
+      <button class="opt" data-value="Non-loaded">Non-loaded</button>
+    </div>
+  </section>
+
+  <!-- 08 Prosthetic -->
+  <section class="section">
+    <div class="section-head">
+      <span class="section-number">08</span>
+      <h2>Immediate load / prosthetics</h2>
+    </div>
+    <div class="options-group" data-group="prosth" data-multi="false">
+      <button class="opt" data-value="Immediate load — provisional cemented w/ temp cement">Immediate load — provisional cemented w/ temp cement</button>
+      <button class="opt" data-value="Removable partial denture">Removable partial denture</button>
+      <button class="opt" data-value="Complete denture">Complete denture</button>
+      <button class="opt" data-value="Not applicable">Not applicable</button>
+    </div>
+    <p class="note-text" style="margin-top:0.25rem">If denture: patient instructed not to wear for at least one week; adjustments with general dentist or prosthodontist.</p>
+  </section>
+
+  <!-- 09 Post-op -->
+  <section class="section">
+    <div class="section-head">
+      <span class="section-number">09</span>
+      <h2>Post-op</h2>
+    </div>
+    <div class="options-label">Select all that apply</div>
+    <div class="options-group" data-group="postop" data-multi="true">
+      <button class="opt" data-value="Post-op instructions reviewed with patient">Post-op instructions reviewed with patient</button>
+      <button class="opt" data-value="Emergency contact info given">Emergency contact info given</button>
+      <button class="opt" data-value="Soft diet instructions given">Soft diet instructions given</button>
+    </div>
+  </section>
+
+  <!-- 10 Rx -->
+  <section class="section">
+    <div class="section-head">
+      <span class="section-number">10</span>
+      <h2>Prescriptions (Rx)</h2>
+    </div>
+    <div class="options-label">Select all prescribed</div>
+    <div class="options-group" data-group="rx" data-multi="true">
+      <button class="opt" data-value="Amoxicillin 500mg — 21 caps, 1 TID, one refill">Amoxicillin 500mg — 21 caps, 1 TID, one refill</button>
+      <button class="opt" data-value="Cleocin 150mg — 21 caps, 1 TID">Cleocin 150mg — 21 caps, 1 TID</button>
+      <button class="opt" data-value="Tylenol #3 — 20 tabs, 1 q6h for pain">Tylenol #3 — 20 tabs, 1 q6h for pain</button>
+      <button class="opt" data-value="Vicodin ES — 20 tabs, 1 q6h PRN pain">Vicodin ES — 20 tabs, 1 q6h PRN pain</button>
+    </div>
+    <div class="options-label">Motrin strength (if prescribed)</div>
+    <div class="options-group" data-group="motrin" data-multi="false">
+      <button class="opt" data-value="Motrin 600mg — 1 QID for pain">Motrin 600mg — 1 QID</button>
+      <button class="opt" data-value="Motrin 800mg — 1 QID for pain">Motrin 800mg — 1 QID</button>
+      <button class="opt" data-value="Not prescribed">Not prescribed</button>
+    </div>
+  </section>
+
+  <!-- 11 Next Visit -->
+  <section class="section">
+    <div class="section-head">
+      <span class="section-number">11</span>
+      <h2>Next visit</h2>
+    </div>
+    <div class="options-group" data-group="nextvisit" data-multi="false">
+      <button class="opt" data-value="Post-op exam — 2 weeks">Post-op exam — 2 weeks</button>
+      <button class="opt" data-value="Post-op exam — as needed prior">Post-op exam — as needed prior</button>
+    </div>
+    <div class="field-row" style="margin-top:0.5rem">
+      <label>Notes</label>
+      <input class="field-input" type="text" placeholder="—">
+    </div>
+  </section>
+
+  <!-- 12 Signature -->
+  <section class="section">
+    <div class="section-head">
+      <span class="section-number">12</span>
+      <h2>Authorization</h2>
+    </div>
+    <div class="sig-row">
+      <div class="sig-field">
+        <label>Doctor's signature</label>
+        <input class="field-input" id="sig-field" type="text" value="Dale Goldschlag">
+      </div>
+      <div class="sig-field">
+        <label>Date</label>
+        <input class="field-input" id="sig-date" type="text">
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+// ── Date helper ───────────────────────────────────────────
+function todayStr() {
+  const d = new Date();
+  const mm = String(d.getMonth() + 1).padStart(2, '0');
+  const dd = String(d.getDate()).padStart(2, '0');
+  const yy = String(d.getFullYear()).slice(-2);
+  return mm + ' / ' + dd + ' / ' + yy;
+}
+document.getElementById('surgery-date').value = todayStr();
+document.getElementById('sig-date').value = todayStr();
+
+// ── Teeth grid ────────────────────────────────────────────
+const selectedTeeth = new Set();
+
+function buildTeethRow(containerId, numbers) {
+  const grid = document.getElementById(containerId);
+  numbers.forEach(n => {
+    const b = document.createElement('button');
+    b.className = 'tooth-btn';
+    b.textContent = n;
+    b.dataset.tooth = n;
+    b.addEventListener('click', () => {
+      if (selectedTeeth.has(n)) {
+        selectedTeeth.delete(n);
+        b.classList.remove('selected');
+      } else {
+        selectedTeeth.add(n);
+        b.classList.add('selected');
+      }
+      updateTeethStatus();
+    });
+    grid.appendChild(b);
+  });
+}
+
+buildTeethRow('upper-grid', Array.from({length:16}, (_,i) => i+1));
+buildTeethRow('lower-grid', Array.from({length:16}, (_,i) => 32-i));
+
+// ── Implant teeth grid ────────────────────────────────────
+const selectedImplantTeeth = new Set();
+
+function buildImplantTeethRow(containerId, numbers) {
+  const grid = document.getElementById(containerId);
+  numbers.forEach(n => {
+    const b = document.createElement('button');
+    b.className = 'tooth-btn';
+    b.textContent = n;
+    b.dataset.tooth = n;
+    b.addEventListener('click', () => {
+      if (selectedImplantTeeth.has(n)) {
+        selectedImplantTeeth.delete(n);
+        b.classList.remove('selected');
+      } else {
+        selectedImplantTeeth.add(n);
+        b.classList.add('selected');
+      }
+      updateImplantTeethStatus();
+    });
+    grid.appendChild(b);
+  });
+}
+
+buildImplantTeethRow('implant-upper-grid', Array.from({length:16}, (_,i) => i+1));
+buildImplantTeethRow('implant-lower-grid', Array.from({length:16}, (_,i) => 32-i));
+
+function updateImplantTeethStatus() {
+  const disp = document.getElementById('implant-teeth-display');
+  const clr = document.getElementById('implant-teeth-clear');
+  if (selectedImplantTeeth.size === 0) {
+    disp.textContent = 'None selected';
+    clr.classList.remove('show');
+  } else {
+    const sorted = Array.from(selectedImplantTeeth).sort((a,b) => a-b);
+    disp.textContent = 'Selected: ' + sorted.join(', ');
+    clr.classList.add('show');
+  }
+}
+
+function clearImplantTeeth() {
+  selectedImplantTeeth.clear();
+  document.querySelectorAll('#implant-upper-grid .tooth-btn, #implant-lower-grid .tooth-btn')
+    .forEach(b => b.classList.remove('selected'));
+  updateImplantTeethStatus();
+}
+
+function updateTeethStatus() {
+  const disp = document.getElementById('teeth-display');
+  const clr = document.getElementById('teeth-clear');
+  if (selectedTeeth.size === 0) {
+    disp.textContent = 'None selected';
+    clr.classList.remove('show');
+  } else {
+    const sorted = Array.from(selectedTeeth).sort((a,b) => a-b);
+    disp.textContent = 'Selected: ' + sorted.join(', ');
+    clr.classList.add('show');
+  }
+}
+
+function clearTeeth() {
+  selectedTeeth.clear();
+  document.querySelectorAll('.tooth-btn').forEach(b => b.classList.remove('selected'));
+  updateTeethStatus();
+}
+
+// ── Option groups ─────────────────────────────────────────
+document.querySelectorAll('[data-group]').forEach(group => {
+  const isMulti = group.dataset.multi === 'true';
+  const groupName = group.dataset.group;
+  const btns = Array.from(group.querySelectorAll('.opt'));
+
+  btns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (isMulti) {
+        btn.classList.toggle('multi-selected');
+        if (groupName === 'premed' && btn.id === 'btn-premed-other') {
+          document.getElementById('premed-other-row').classList.toggle(
+            'show', btn.classList.contains('multi-selected')
+          );
+        }
+        return;
+      }
+
+      const alreadySelected = btn.classList.contains('selected');
+
+      if (alreadySelected) {
+        btns.forEach(b => b.classList.remove('selected', 'hidden'));
+        removeUndo(group);
+        if (groupName === 'carbo') syncLido();
+        return;
+      }
+
+      btns.forEach(b => {
+        if (b === btn) { b.classList.add('selected'); b.classList.remove('hidden'); }
+        else { b.classList.add('hidden'); b.classList.remove('selected'); }
+      });
+      addUndo(group, btns);
+      if (groupName === 'carbo') syncLido();
+    });
+  });
+});
+
+// ── Lido visibility based on Carbo ───────────────────────
+function syncLido() {
+  const sel = document.querySelector('[data-group="carbo"] .opt.selected');
+  const wrap = document.getElementById('lido-wrap');
+  if (sel && sel.dataset.value !== 'Not used') {
+    wrap.classList.add('dimmed');
+  } else {
+    wrap.classList.remove('dimmed');
+  }
+}
+
+// ── Undo ──────────────────────────────────────────────────
+function addUndo(group, btns) {
+  removeUndo(group);
+  const u = document.createElement('button');
+  u.className = 'undo-link';
+  u.textContent = '↩ undo';
+  u.addEventListener('click', () => {
+    btns.forEach(b => b.classList.remove('selected', 'hidden'));
+    u.remove();
+    if (group.dataset.group === 'carbo') syncLido();
+  });
+  group.parentElement.insertBefore(u, group.nextSibling);
+}
+
+function removeUndo(group) {
+  const u = group.parentElement.querySelector('.undo-link');
+  if (u) u.remove();
+}
+
+// ── Reset all ─────────────────────────────────────────────
+function resetAll() {
+  document.querySelectorAll('.opt').forEach(b => b.classList.remove('selected','hidden','multi-selected'));
+  document.querySelectorAll('.undo-link').forEach(u => u.remove());
+  document.getElementById('premed-other-row').classList.remove('show');
+  document.getElementById('lido-wrap').classList.remove('dimmed');
+  clearTeeth();
+  clearImplantTeeth();
+  applyDefaults();
+}
+
+// ── Defaults ──────────────────────────────────────────────
+function preselectSingle(groupName, value) {
+  const group = document.querySelector('[data-group="' + groupName + '"]');
+  const btns = Array.from(group.querySelectorAll('.opt'));
+  btns.forEach(b => {
+    if (b.dataset.value === value) { b.classList.add('selected'); b.classList.remove('hidden'); }
+    else { b.classList.add('hidden'); b.classList.remove('selected'); }
+  });
+  addUndo(group, btns);
+}
+
+function applyDefaults() {
+  // Consent: single option, select it
+  const consentGroup = document.querySelector('[data-group="consent"]');
+  const consentBtn = consentGroup.querySelector('.opt');
+  consentBtn.classList.add('selected');
+  addUndo(consentGroup, [consentBtn]);
+
+  // Smoking → Discussed
+  preselectSingle('smoking', 'Discussed');
+
+  // Lidocaine → 2 carpules
+  preselectSingle('lido', '2 carpules');
+
+  // Carbocaine → Not used
+  preselectSingle('carbo', 'Not used');
+  syncLido();
+
+  // Rx → Amoxicillin 500mg default on
+  document.querySelectorAll('[data-group="rx"] .opt').forEach(b => {
+    if (b.dataset.value === 'Amoxicillin 500mg — 21 caps, 1 TID, one refill') {
+      b.classList.add('multi-selected');
+    }
+  });
+
+  // Motrin → 600mg default selected
+  preselectSingle('motrin', 'Motrin 600mg — 1 QID for pain');
+}
+
+applyDefaults();
+</script>
+
+</body>
+</html>

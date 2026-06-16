@@ -1,0 +1,4 @@
+# Local dev / editor cruft — not part of the deployed site
+.claude/
+.DS_Store
+*.log

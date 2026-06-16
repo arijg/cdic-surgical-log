@@ -1,0 +1,328 @@
+/* ============================================================
+   Surgical Log — Ceramic Dental Implant Centre
+   Form UI + typeset operative-note document
+   ============================================================ */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+[hidden] { display: none !important; }
+
+:root {
+  --bg:        #f4f5f4;
+  --surface:   #ffffff;
+  --ink:       #16201f;
+  --ink-soft:  #5a6664;
+  --ink-faint: #9aa6a3;
+  --line:      #e2e6e4;
+  --line-soft: #eceeed;
+  --brand:     #13343b;   /* deep teal */
+  --brand-2:   #1f5e63;
+  --accent:    #2f7d76;
+  --accent-bg: #e8f2ef;
+  --danger:    #9a3b34;
+  --radius:    12px;
+  --radius-sm: 8px;
+  --shadow:    0 1px 2px rgba(20,40,40,.05), 0 6px 24px rgba(20,40,40,.06);
+  --sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --serif: "Newsreader", Georgia, "Times New Roman", serif;
+}
+
+html { background: var(--bg); }
+body {
+  font-family: var(--sans);
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+
+/* ───────────────── Top bar ───────────────── */
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .85rem 1.5rem;
+  padding-top: max(.85rem, env(safe-area-inset-top));
+  background: var(--brand);
+  color: #eef5f3;
+  box-shadow: 0 1px 0 rgba(0,0,0,.04);
+}
+.topbar__brand { display: flex; flex-direction: column; line-height: 1.15; }
+.topbar__title { font-family: var(--serif); font-size: 1.3rem; font-weight: 600; letter-spacing: .01em; }
+.topbar__sub { font-size: .68rem; letter-spacing: .14em; text-transform: uppercase; color: #8fb3ab; margin-top: 2px; }
+.topbar__actions { display: flex; gap: .6rem; }
+
+/* ───────────────── Buttons ───────────────── */
+.btn {
+  font-family: var(--sans);
+  font-size: .82rem;
+  font-weight: 600;
+  letter-spacing: .01em;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: .5rem 1.1rem;
+  cursor: pointer;
+  transition: transform .04s ease, background .15s ease, border-color .15s ease, color .15s ease;
+  white-space: nowrap;
+}
+.btn:active { transform: translateY(1px); }
+.btn--primary { background: #eef5f3; color: var(--brand); }
+.btn--primary:hover { background: #ffffff; }
+.btn--ghost { background: transparent; color: #cfe0db; border-color: rgba(207,224,219,.35); }
+.btn--ghost:hover { border-color: rgba(207,224,219,.7); color: #fff; }
+.btn--lg { font-size: .95rem; padding: .8rem 2rem; }
+
+/* In the form footer / overlay the primary button needs the inverse palette */
+.app__footer .btn--primary,
+.overlay__actions .btn--primary { background: var(--brand); color: #fff; }
+.app__footer .btn--primary:hover,
+.overlay__actions .btn--primary:hover { background: var(--brand-2); }
+.overlay__actions .btn--ghost { color: var(--ink-soft); border-color: var(--line); }
+.overlay__actions .btn--ghost:hover { border-color: var(--ink-soft); color: var(--ink); }
+
+/* ───────────────── Layout ───────────────── */
+.app { max-width: 760px; margin: 0 auto; padding: 1.5rem 1.25rem 4rem; }
+.privacy-note {
+  font-size: .76rem;
+  color: var(--ink-soft);
+  text-align: center;
+  margin: .25rem 0 1.5rem;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.4rem 1.5rem;
+  margin-bottom: 1.1rem;
+}
+.card__head { display: flex; align-items: baseline; gap: .7rem; margin-bottom: 1rem; }
+.card__num {
+  font-family: var(--serif);
+  font-size: .95rem;
+  font-style: italic;
+  color: var(--ink-faint);
+  min-width: 1.6em;
+}
+.card__head h2 { font-size: 1.02rem; font-weight: 600; letter-spacing: -.01em; }
+.card__code {
+  font-size: .62rem; font-weight: 600; letter-spacing: .1em;
+  color: var(--accent); background: var(--accent-bg);
+  padding: 2px 7px; border-radius: 5px; vertical-align: middle; margin-left: .35rem;
+}
+.card__note {
+  font-size: .9rem;
+  color: var(--ink-soft);
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+.card__note--strong { color: var(--ink); }
+
+/* ───────────────── Fields ───────────────── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 1.25rem; }
+.field { display: flex; flex-direction: column; gap: .35rem; }
+.field--inline { margin-top: 1rem; }
+.field__label { font-size: .72rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-soft); }
+.field__input {
+  font-family: var(--sans);
+  font-size: .95rem;
+  color: var(--ink);
+  background: #fbfcfc;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: .6rem .75rem;
+  outline: none;
+  transition: border-color .15s ease, box-shadow .15s ease;
+  width: 100%;
+}
+.field__input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-bg); }
+.field__input::placeholder { color: var(--ink-faint); }
+
+/* ───────────────── Controls / chips ───────────────── */
+.control { margin-top: 1.1rem; }
+.control:first-of-type { margin-top: 0; }
+.control__label { display: block; font-size: .72rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: .55rem; }
+.control__hint { display: block; font-size: .76rem; color: var(--ink-faint); margin-bottom: .6rem; }
+
+.chips { display: flex; flex-wrap: wrap; gap: .5rem; }
+.chip {
+  font-family: var(--sans);
+  font-size: .85rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+  background: #fbfcfc;
+  border: 1.5px solid var(--line);
+  border-radius: 999px;
+  padding: .5rem .95rem;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: all .12s ease;
+  text-align: left;
+  line-height: 1.35;
+}
+.chip:hover { border-color: var(--accent); color: var(--ink); }
+.chip[aria-pressed="true"] {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+}
+.chip--wide { max-width: 100%; }
+
+/* ───────────────── Teeth selector ───────────────── */
+.teeth { display: flex; flex-direction: column; gap: .9rem; }
+.teeth__arch { }
+.teeth__arch-label { font-size: .66rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: .35rem; }
+.teeth__row { display: grid; grid-template-columns: repeat(16, 1fr); gap: 4px; }
+.tooth {
+  font-family: var(--sans);
+  font-size: .74rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+  background: #fbfcfc;
+  border: 1.5px solid var(--line);
+  border-radius: 6px;
+  padding: .42rem 0;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: all .1s ease;
+}
+.tooth:hover { border-color: var(--accent); color: var(--ink); }
+.tooth[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+.teeth__summary { font-size: .82rem; color: var(--ink-soft); margin-top: .8rem; }
+.teeth__summary--active { color: var(--ink); font-weight: 500; }
+
+/* ───────────────── Implant per-tooth details ───────────────── */
+.implant-details:not(:empty) { margin-top: 1.2rem; display: flex; flex-direction: column; gap: .9rem; }
+.implant-row {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  padding: .9rem 1rem;
+  background: #fbfcfc;
+}
+.implant-row__head { display: flex; align-items: center; justify-content: space-between; margin-bottom: .6rem; }
+.implant-row__tooth { font-weight: 600; font-size: .92rem; }
+.implant-row__size { font-size: .82rem; color: var(--accent); font-weight: 600; }
+.implant-row__size:empty::before { content: "size not set"; color: var(--ink-faint); font-weight: 400; }
+
+.matrix { margin-top: .75rem; overflow-x: auto; }
+.matrix table { border-collapse: collapse; font-size: .76rem; }
+.matrix th, .matrix td { padding: 0; text-align: center; }
+.matrix thead th { font-weight: 600; color: var(--ink-soft); padding: 0 0 .35rem; }
+.matrix tbody th { font-weight: 600; color: var(--ink-soft); padding-right: .5rem; text-align: right; white-space: nowrap; }
+.matrix__corner { font-size: .6rem !important; color: var(--ink-faint) !important; font-weight: 500 !important; text-align: right !important; padding-right: .5rem !important; }
+.matrix__cell {
+  width: 44px; height: 34px;
+  border: 1.5px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--ink-soft);
+  font-size: .78rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all .1s ease;
+  margin: 2px;
+}
+.matrix__cell:hover { border-color: var(--accent); color: var(--ink); }
+.matrix__cell[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+.matrix__axis { font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); margin: .2rem 0; }
+
+/* ───────────────── Footer ───────────────── */
+.app__footer { display: flex; justify-content: center; margin-top: 2rem; }
+
+/* ───────────────── Preview overlay ───────────────── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: #d9dedc;
+  display: none;
+  flex-direction: column;
+}
+.overlay.open { display: flex; }
+.overlay__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .8rem 1.25rem;
+  padding-top: max(.8rem, env(safe-area-inset-top));
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.overlay__title { font-weight: 600; font-size: .95rem; }
+.overlay__actions { display: flex; gap: .6rem; }
+.overlay__scroll { flex: 1; overflow: auto; padding: 1.5rem 1rem 3rem; display: flex; justify-content: center; }
+
+/* ───────────────── The note document (screen preview) ───────────────── */
+.note {
+  width: 8.5in;
+  max-width: 100%;
+  min-height: 11in;
+  background: #fff;
+  color: #111;
+  box-shadow: 0 4px 30px rgba(0,0,0,.14);
+  padding: 0.7in 0.75in;
+  font-family: var(--sans);
+  font-size: 11.5pt;
+  line-height: 1.5;
+  transform-origin: top center;
+}
+.note__header { text-align: center; border-bottom: 2px solid #111; padding-bottom: .5rem; margin-bottom: 1rem; }
+.note__title { font-family: var(--serif); font-size: 20pt; font-weight: 600; letter-spacing: .01em; }
+.note__org { font-size: 9.5pt; letter-spacing: .18em; text-transform: uppercase; color: #555; margin-top: 3px; }
+
+.note__meta { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; font-size: 11pt; }
+.note__meta b { font-weight: 600; }
+.note__meta span { color: #333; }
+
+.note__section { margin-bottom: .7rem; }
+.note__h { font-size: 8.5pt; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #444; margin-bottom: .15rem; }
+.note__p { font-size: 11pt; line-height: 1.5; color: #111; margin: 0; }
+.note__p + .note__p { margin-top: .35rem; }
+
+.note__sig { margin-top: 1.6rem; padding-top: .8rem; border-top: 1px solid #bbb; display: flex; justify-content: space-between; align-items: flex-end; }
+.note__sig-name { font-size: 13pt; }
+.note__sig-name small { display: block; font-size: 8pt; letter-spacing: .1em; text-transform: uppercase; color: #666; margin-top: 4px; font-weight: 600; }
+.note__sig-date { font-size: 11pt; color: #333; }
+
+.note__empty { color: #999; font-style: italic; }
+
+/* ───────────────── Print ───────────────── */
+@page { size: letter; margin: 0.5in; }
+
+@media print {
+  html, body { background: #fff !important; }
+  .topbar, .app { display: none !important; }
+  .overlay {
+    position: static !important;
+    display: block !important;
+    background: #fff !important;
+  }
+  .overlay__bar { display: none !important; }
+  .overlay__scroll { display: block !important; padding: 0 !important; overflow: visible !important; }
+  .note {
+    width: auto !important;
+    max-width: none !important;
+    min-height: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+}
+
+/* ───────────────── Responsive ───────────────── */
+@media (max-width: 620px) {
+  .topbar { padding: .75rem 1rem; padding-top: max(.75rem, env(safe-area-inset-top)); }
+  .topbar__actions .btn { padding: .45rem .8rem; font-size: .76rem; }
+  .topbar__actions #resetBtn { display: none; }
+  .app { padding: 1rem .85rem 4rem; }
+  .card { padding: 1.15rem 1rem; }
+  .grid-2 { grid-template-columns: 1fr; }
+  .teeth__row { grid-template-columns: repeat(8, 1fr); }
+  .matrix__cell { width: 40px; }
+}
