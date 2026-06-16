@@ -470,14 +470,22 @@
     document.title = t;
   }
 
-  /* ---------- Fit the note onto a single Letter page ---------- */
-  function fitNote() {
-    const note = $("#note");
-    note.style.zoom = "";
-    const pageH = 11 * 96; // 1in = 96px in print
-    const h = note.scrollHeight;
-    if (h > pageH) note.style.zoom = Math.max(0.55, pageH / h);
+  /* ---------- Fit a page element onto a single Letter sheet ----------
+     Target is just under 11in so rounding never spills to a 2nd page.
+     min-height is temporarily removed so we measure true content height,
+     not the 11in min-height used for the preview. */
+  const PAGE_FIT_PX = 11 * 96 - 16;
+
+  function fitToPage(el, floor) {
+    el.style.zoom = "";
+    const prevMin = el.style.minHeight;
+    el.style.minHeight = "0";
+    const h = el.scrollHeight;
+    el.style.minHeight = prevMin;
+    if (h > PAGE_FIT_PX) el.style.zoom = Math.max(floor, PAGE_FIT_PX / h);
   }
+
+  function fitNote() { fitToPage($("#note"), 0.55); }
 
   /* ---------- Preview / export ---------- */
   function openPreview() {
@@ -503,12 +511,7 @@
     ov.querySelector(".overlay__scroll").scrollTop = 0;
   }
   function fitConsentPages() {
-    const pageH = 11 * 96;
-    $$("#consentDoc .consent-page").forEach((pg) => {
-      pg.style.zoom = "";
-      const h = pg.scrollHeight;
-      if (h > pageH) pg.style.zoom = Math.max(0.5, pageH / h);
-    });
+    $$("#consentDoc .consent-page").forEach((pg) => fitToPage(pg, 0.45));
   }
   function closePreview() {
     const ov = $("#previewOverlay");

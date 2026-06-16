@@ -327,6 +327,7 @@ body {
 .cpage ol.cpage__list li { margin-bottom: .4rem; }
 .cpage__numlist { display: flex; gap: .5rem; margin-bottom: .5rem; }
 .cpage__numlist .n { font-weight: 700; flex-shrink: 0; }
+.cpage__divider { border-top: 2px dashed #bbb; margin: 1.1rem 0; }
 
 /* signature blocks */
 .sig-row { display: flex; gap: 1.4rem; margin-top: 1.1rem; align-items: flex-end; flex-wrap: wrap; }
@@ -335,8 +336,11 @@ body {
 .sig__line { border-bottom: 1px solid #000; min-height: 1.25rem; padding: 0 2px 1px; font-size: 10.5pt; }
 .sig__lbl { font-size: 8.5pt; color: #555; margin-top: 2px; letter-spacing: .02em; }
 
-/* ───────────────── Print ───────────────── */
-@page { size: letter; margin: 0.5in; }
+/* ───────────────── Print ─────────────────
+   @page margin is 0 so that the document's own padding provides the page
+   margins. This keeps the on-screen preview geometry identical to the printed
+   output, so the single-page auto-fit (in app.js) is exact. */
+@page { size: letter; margin: 0; }
 
 @media print {
   html, body { background: #fff !important; }
@@ -349,28 +353,27 @@ body {
   .overlay__bar { display: none !important; }
   .overlay__scroll { display: block !important; padding: 0 !important; overflow: visible !important; }
   .note {
-    width: auto !important;
+    width: 8.5in !important;
     max-width: none !important;
     min-height: 0 !important;
     box-shadow: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
+    margin: 0 auto !important;
+    /* keep the on-screen padding — it is the printed margin */
   }
 
   /* show only the active document */
   .overlay:not(.mode-consents) #consentDoc { display: none !important; }
   .overlay.mode-consents #note { display: none !important; }
 
-  /* consent packet: one Excel page = one printed page */
+  /* consent packet: one logical sheet = one printed page */
   .overlay.mode-consents #consentDoc { display: block !important; }
   .consent-doc { gap: 0 !important; }
   .consent-page {
-    width: auto !important;
+    width: 8.5in !important;
     max-width: none !important;
     min-height: 0 !important;
     box-shadow: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
+    margin: 0 auto !important;
     page-break-after: always;
     break-after: page;
   }
