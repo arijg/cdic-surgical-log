@@ -10,7 +10,7 @@
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]));
   const BLANK = "______________________";
 
-  const wrap = (inner) => `<section class="consent-page">${inner}</section>`;
+  const page = (inner) => `<section class="consent-page">${inner}</section>`;
   const header = (name, date) =>
     `<div class="cpage__header"><span>Patient Name:&nbsp; <b>${esc(name) || BLANK}</b></span>` +
     `<span>Date:&nbsp; <b>${esc(date) || "____________"}</b></span></div>`;
@@ -22,7 +22,7 @@
 
   /* ── Page 1 — Informed Consent (intro) ── */
   function page1(name, date) {
-    return (
+    return page(
       header(name, date) +
       `<div class="cpage__title">Informed Consent for Dental Implant and Dental Procedures and Treatment</div>` +
       `<div class="cpage__subtitle">${ORG}</div>` +
@@ -54,7 +54,7 @@
       "Allergic reaction to anesthetic or medication",
       "Need for follow-up treatment, including surgery",
     ];
-    return (
+    return page(
       header(name, date) +
       `<div class="cpage__title">Consent For Dental Extractions, Implant Removal, Implant Placement, Bone Grafting and other dental surgery</div>` +
       `<p>As with all surgery, there are commonly known risks and potential complications associated with dental treatment. No one can guarantee the success of the recommended treatment, or that you will not experience a complication or less than optimal result. Even though many of these complications are rare, they can and do occur occasionally.</p>` +
@@ -69,7 +69,7 @@
 
   /* ── Page 3 — Responsibility & Arbitration ── */
   function page3(name, date) {
-    return (
+    return page(
       `<div class="cpage__org">${ORG}</div>` +
       `<div class="cpage__h">Responsibility and Consent Statement:</div>` +
       `<p>I hereby authorize and request the performance of dental services for myself.</p>` +
@@ -91,7 +91,7 @@
 
   /* ── Page 4 — Affirmation of informed consent ── */
   function page4(name, date) {
-    return (
+    return page(
       field("Patient Name", name) +
       `<p>I am affirming that my Informed Consent for Dental Treatment, Extractions, Implant Surgery, and Prosthetic Treatment have been given to me in oral and written form and in a language that I understand.</p>` +
       `<p>The risks and alternatives to the treatment I am consenting to have been thoroughly discussed. I have had an opportunity to ask the doctor questions and review alternative treatments. I am comfortable proceeding with the treatment.</p>` +
@@ -101,7 +101,7 @@
 
   /* ── Prosthetic Treatment Consent, Page 1 ── */
   function page6(name, date) {
-    return (
+    return page(
       `<div class="cpage__title">Prosthetic Treatment Consent Form</div>` +
       `<div class="cpage__subtitle">Page 1</div>` +
       field("Patient's Name", name) +
@@ -119,7 +119,7 @@
 
   /* ── Page 7 — Prosthetic Treatment Consent, Page 2 ── */
   function page7(name, date) {
-    return (
+    return page(
       `<div class="cpage__title">Prosthetic Treatment Consent Form</div>` +
       `<div class="cpage__subtitle">Page 2</div>` +
       field("Patient's Name", name) +
@@ -135,7 +135,7 @@
 
   /* ── Page 8 — ICOI Implant Patient Information & Consent ── */
   function page8(name, date) {
-    return (
+    return page(
       `<div class="cpage__title">The International Congress of Oral Implantologists</div>` +
       `<div class="cpage__subtitle">IMPLANT PATIENT INFORMATION AND CONSENT FORM</div>` +
       num(1, "I have been informed and I understand the purpose and the nature of the implant surgery procedure. I understand what is necessary to accomplish the placement of the implant under the gum or in the bone.") +
@@ -157,7 +157,7 @@
 
   /* ── Page 9 — Post-operative instructions ── */
   function page9(name, date) {
-    return (
+    return page(
       header(name, date) +
       `<div class="cpage__title">Post Operative Instructions For Dental Implant Surgery</div>` +
       `<p>Do not disturb the wound. Avoid rinsing, spitting, or touching the wound on the day of surgery. There may be a metal healing abutment protruding through the gingival (gum) tissue.</p>` +
@@ -180,11 +180,8 @@
   }
 
   window.buildConsentPacket = function (name, date) {
-    // Each entry is one printed sheet. A grouped entry puts two forms on one sheet:
-    //   Prosthetic Treatment Consent P1 + P2 share a sheet; ICOI + Post-Op share a sheet.
-    const sheets = [[page1], [page2], [page3], [page4], [page6, page7], [page8, page9]];
-    return sheets
-      .map((group) => wrap(group.map((fn) => fn(name, date)).join('<div class="cpage__divider"></div>')))
+    return [page1, page2, page3, page4, page6, page7, page8, page9]
+      .map((fn) => fn(name, date))
       .join("");
   };
 })();
