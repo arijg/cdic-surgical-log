@@ -80,7 +80,7 @@
       `<div class="cpage__h">Agreement as to Resolutions of Concerns — Arbitration:</div>` +
       `<p>Arbitration is the resolution of a dispute by an impartial third person whose decision is binding on all the parties. We have found that resolving disputes by arbitration is a quick and efficient alternative to the court system. As a result, we request that all patients receiving services at ${ORG} sign this agreement. By signing below and consenting to treatment, ${ORG}, including all dentists, and yourself agree to the following:</p>` +
       `<p>Any controversy, claim or dispute arising out of or related to any dental services you received by any dentists, dental specialists, dental assistants or any employees associated with ${ORG}, including any claims of your spouse or heirs, shall be resolved exclusively and by binding arbitration except for (a) judicial review of the arbitration proceedings or (b) claims within jurisdictional limit of small claims court.</p>` +
-      `<p>Any controversy, claim or dispute arising out of or related to the payment or non-payment of fees, regarding dental services received by any dentists, dental specialists, dental assistants or any employees associated with ${ORG}, shall be resolved exclusively and by binding arbitration except for (a)</p>` +
+      `<p>Any controversy, claim or dispute arising out of or related to the payment or non-payment of fees, regarding dental services received by any dentists, dental specialists, dental assistants or any employees associated with ${ORG}, shall be resolved exclusively and by binding arbitration except for (a) judicial review of the arbitration proceedings or (b) claims within jurisdictional limit of small claims court.</p>` +
       `<p>Arbitration will be settled and administered by the American Arbitration Association, under its Code of Procedure then in effect. Both parties will pay administrative fees and arbitrator compensation for the binding process.</p>` +
       `<p>If any provision of this Arbitration Agreement is held invalid or unenforceable, the remaining provisions remain in full force and effect and will not be affected by the invalidity of such provision.</p>` +
       `<p>The undersigned agrees that he/she waives his/her right to a trial in court for any future malpractice claim he/she may have against ${ORG}, your dentist and any other dental provider at the dental office.</p>` +
@@ -99,29 +99,7 @@
     );
   }
 
-  /* ── Page 5 — Surgical Log ── */
-  function page5(name, date) {
-    return page(
-      `<div class="cpage__org">${ORG}</div>` +
-      `<div class="cpage__title">Surgical Log</div>` +
-      field("Patient Name", name) +
-      field("Date", date) +
-      `<p>Medical History Reviewed: No change (see attached history). Soft Tissue Exam: WNL see notation hard tissue Exam: WNL see notation. Patient instructed to see general dentist or prosthodontist for restorative care, regular dental exams, perio eval and recall as directed. Smoking cessation discussed as needed, soft diet instructions given.</p>` +
-      `<p>Consent for extractions and implants review and signed by patient</p>` +
-      `<p>Current x-rays present or taken: number of PA's taken, patient brought existing x-rays</p>` +
-      `<p>Premedication in office: Circle ones given:<br>Amoxil 500 1gram or 2 grams &nbsp;&nbsp; Cleocin 300mg &nbsp;&nbsp; Motrin 600 mg &nbsp;&nbsp; Tylenol 500</p>` +
-      `<p>Anesthetic Type: Circled ones given<br>2% Lidocaine 1:100,000 epin --- # carpules administered 1 &nbsp; 2 &nbsp; 3 &nbsp;&nbsp;&nbsp; 3% carbocaine -- # carpules administered 1 &nbsp; 2 &nbsp; 3</p>` +
-      `<p>Extractions 7210: &nbsp; Teeth #'s</p>` +
-      `<p>Implants Placed: Loaded or Non Loaded &nbsp; Teeth Areas<br>Labels, sizes and abutments, and teeth areas and types of cover screws</p>` +
-      `<p>Immediate Load: Provisional Cemented with temporary cement. Removable Partial or Complete Denture: patient instructed not to wear for at least one week and adjustments with general dentist or prosthodontist.</p>` +
-      `<p>Post Op instructions reviewed with patient and emergency contact info given to patient.</p>` +
-      `<p>Rx: Circled ones prescribed: Amoxicillin 500 mg, 21, 1 TID. One refill. Cleocin 150 mg, 21 caps, 1 TID. Motrin 600 mg or 800, 1 QID for pain. Tylenol # 3, 20 tabs, 1 every six hours for pain Vicodin ES 20 tabs 1 every six hours prn pain.</p>` +
-      `<p>Next Visit: Post OP exam 2 weeks or as needed prior.</p>` +
-      row(sig("Doctors Signature"), sig("Date of Surgery", date))
-    );
-  }
-
-  /* ── Page 6 — Prosthetic Treatment Consent, Page 1 ── */
+  /* ── Prosthetic Treatment Consent, Page 1 ── */
   function page6(name, date) {
     return page(
       `<div class="cpage__title">Prosthetic Treatment Consent Form</div>` +
@@ -202,7 +180,7 @@
   }
 
   window.buildConsentPacket = function (name, date) {
-    return [page1, page2, page3, page4, page5, page6, page7, page8, page9]
+    return [page1, page2, page3, page4, page6, page7, page8, page9]
       .map((fn) => fn(name, date))
       .join("");
   };
