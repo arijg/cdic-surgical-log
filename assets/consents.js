@@ -31,8 +31,7 @@
       `<p>It is very important that you provide your dentist with accurate information before, during and after treatment. It is equally important that you follow your dentist's advice and recommendations regarding medication, pre and post treatment instructions, referrals to other dentists or specialist, and return for scheduled appointments. If you fail to follow the advice of your dentist, you may increase the chances of a poor outcome.</p>` +
       `<p>The patient is an important part of the treatment team. In addition to complying with the instructions given to you by this office, it is important to report any problems or complications you experience so they can be addressed by your dentist.</p>` +
       `<p>If you are a woman on oral birth control medication, you must consider the fact that antibiotics might make oral birth control less effective. Please consult with your physician before relying on oral birth control medication if your dentist prescribes, or if you are taking antibiotics.</p>` +
-      row(sig("Witness"), sigDate(date), sig("Patient"), sigDate(date)) +
-      field("Print Patient Name", name) +
+      row(sig("Witness"), sigDate(date), sig(name ? "Patient - " + esc(name) : "Patient"), sigDate(date)) +
       row(sig("Doctor Signature"))
     );
   }
@@ -61,8 +60,7 @@
       `<p>Some of the more commonly known risks and complications of treatment include, but are not limited to the following:</p>` +
       `<ol class="cpage__list">${risks.map((r) => `<li>${r}</li>`).join("")}</ol>` +
       `<p>The form is intended to provide you with an overview of potential risks and complications. Do not sign this form or agree to treatment until you have read, understood, and accepted each paragraph stated above. Please discuss the potential benefits, risks, and complications of recommended treatment with your dentist. Be certain all of your concerns have been addressed to your satisfaction by your dentist before commencing treatment.</p>` +
-      row(sig("Witness"), sigDate(date), sig("Patient"), sigDate(date)) +
-      field("Print Patient Name", name) +
+      row(sig("Witness"), sigDate(date), sig(name ? "Patient - " + esc(name) : "Patient"), sigDate(date)) +
       row(sig("Doctor Signature"))
     );
   }
