@@ -215,11 +215,17 @@
 
   function applySignature() {
     if (!sigDataUrl) return;
-    document.querySelectorAll("#consentDoc [data-doctor-sig]").forEach((img) => {
+    // Fill every doctor-signature slot — consent packet AND the surgical-log note.
+    document.querySelectorAll("[data-doctor-sig]").forEach((img) => {
       img.src = sigDataUrl;
       img.hidden = false;
     });
   }
+  // Silent apply (no passphrase prompt) — used when a document is re-rendered.
+  window.applyDoctorSignatures = function () {
+    if (!sigDataUrl) { try { const s = localStorage.getItem(SIG_STORE); if (s) sigDataUrl = s; } catch (e) {} }
+    applySignature();
+  };
 
   const byId = (id) => document.getElementById(id);
   function showUnlock() { const m = byId("sigUnlock"); if (m) { m.hidden = false; const p = byId("sigPass"); if (p) { p.value = ""; p.focus(); } } }

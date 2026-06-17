@@ -344,7 +344,7 @@
   function buildNote() {
     const name = $("#patientName").value.trim();
     const surgDate = fmtDate($("#surgeryDate").value);
-    const sig = $("#signature").value.trim() || "/s/ Dale Goldschlag";
+    const sig = $("#signature").value.trim() || "Dale Goldschlag";
     const sigDate = fmtDate($("#sigDate").value);
 
     const sections = [];
@@ -456,11 +456,15 @@
       </div>
       ${sections.join("")}
       <div class="note__sig">
-        <div class="note__sig-name">${esc(sig)}<small>Surgeon</small></div>
+        <div class="note__sig-block">
+          <img class="note__sig-img" data-doctor-sig alt="Doctor signature" hidden>
+          <div class="note__sig-name">${esc(sig)}<small>Surgeon</small></div>
+        </div>
         <div class="note__sig-date">Date: ${sigDate || "—"}</div>
       </div>`;
 
     updateDocTitle(name, surgDate);
+    if (window.applyDoctorSignatures) window.applyDoctorSignatures();
   }
 
   function updateDocTitle(name, date) {
@@ -489,6 +493,7 @@
     $("#overlayTitle").textContent = "Surgical log — preview";
     fitNote();
     ov.querySelector(".overlay__scroll").scrollTop = 0;
+    if (window.fillDoctorSignatures) window.fillDoctorSignatures();
   }
   function openConsents() {
     if (typeof window.buildConsentPacket !== "function") { alert("Consent forms failed to load."); return; }
@@ -536,7 +541,7 @@
     $("#premedOther").value = "";
     $("#surgeryDate").value = todayISO();
     $("#sigDate").value = todayISO();
-    $("#signature").value = "/s/ Dale Goldschlag";
+    $("#signature").value = "Dale Goldschlag";
     renderAll();
   }
 
@@ -559,7 +564,7 @@
     setDefaults();
     $("#surgeryDate").value = todayISO();
     $("#sigDate").value = todayISO();
-    $("#signature").value = "/s/ Dale Goldschlag";
+    $("#signature").value = "Dale Goldschlag";
     renderAll();
 
     $("#previewBtn").addEventListener("click", openPreview);
