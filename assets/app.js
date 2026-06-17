@@ -501,6 +501,7 @@
     $("#overlayTitle").textContent = "Consent forms — preview";
     fitConsentPages();
     ov.querySelector(".overlay__scroll").scrollTop = 0;
+    if (window.fillDoctorSignatures) window.fillDoctorSignatures();
   }
   function fitConsentPages() {
     const pageH = 11 * 96;
@@ -514,6 +515,7 @@
     const ov = $("#previewOverlay");
     ov.classList.remove("open", "mode-consents");
     ov.setAttribute("aria-hidden", "true");
+    if (window.closeSignatureUnlock) window.closeSignatureUnlock();
   }
   function savePdf() {
     if ($("#previewOverlay").classList.contains("mode-consents")) {

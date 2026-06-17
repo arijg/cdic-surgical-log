@@ -22,7 +22,7 @@
 
   // ── Signature blocks: patient (left) and doctor (right), each with a Date line below.
   // The doctor's signature image is placed automatically.
-  const DOCTOR_SIG = `<img class="sigcol__img" src="Signature.png" alt="Doctor signature">`;
+  const DOCTOR_SIG = `<img class="sigcol__img" data-doctor-sig alt="Doctor signature" hidden>`;
   const patientLabel = (name) => (name ? "Patient - " + esc(name) : "Patient");
   const sigCol = (lineHtml, label, date) =>
     `<div class="sigcol">` +
@@ -194,4 +194,61 @@
       .map((fn) => fn(name, date))
       .join("");
   };
+
+  /* ── Doctor signature: AES-GCM decrypt in-browser, gated by a passphrase ── */
+  const SIG_STORE = "cdic_doctor_sig_v1";
+  let sigDataUrl = null;
+
+  async function decryptSignature(passphrase) {
+    if (!window.SIGNATURE_ENC) throw new Error("no encrypted signature");
+    const raw = Uint8Array.from(atob(window.SIGNATURE_ENC), (c) => c.charCodeAt(0));
+    const salt = raw.slice(0, 16), iv = raw.slice(16, 28), data = raw.slice(28);
+    const km = await crypto.subtle.importKey("raw", new TextEncoder().encode(passphrase), "PBKDF2", false, ["deriveKey"]);
+    const key = await crypto.subtle.deriveKey(
+      { name: "PBKDF2", salt, iterations: 250000, hash: "SHA-256" },
+      km, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+    const plain = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, data); // throws on wrong passphrase
+    let bin = ""; const bytes = new Uint8Array(plain), CH = 0x8000;
+    for (let i = 0; i < bytes.length; i += CH) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + CH));
+    return "data:image/jpeg;base64," + btoa(bin);
+  }
+
+  function applySignature() {
+    if (!sigDataUrl) return;
+    document.querySelectorAll("#consentDoc [data-doctor-sig]").forEach((img) => {
+      img.src = sigDataUrl;
+      img.hidden = false;
+    });
+  }
+
+  const byId = (id) => document.getElementById(id);
+  function showUnlock() { const m = byId("sigUnlock"); if (m) { m.hidden = false; const p = byId("sigPass"); if (p) { p.value = ""; p.focus(); } } }
+  function hideUnlock() { const m = byId("sigUnlock"); if (m) m.hidden = true; const e = byId("sigErr"); if (e) e.hidden = true; }
+
+  // app.js calls this right after the consent packet is rendered.
+  window.fillDoctorSignatures = function () {
+    if (!sigDataUrl) { try { const s = localStorage.getItem(SIG_STORE); if (s) sigDataUrl = s; } catch (e) {} }
+    if (sigDataUrl) { applySignature(); hideUnlock(); }
+    else showUnlock();
+  };
+  window.closeSignatureUnlock = hideUnlock;
+
+  function initSignatureUI() {
+    const go = byId("sigGo"), skip = byId("sigSkip"), pass = byId("sigPass");
+    if (!go) return;
+    const attempt = async () => {
+      try {
+        sigDataUrl = await decryptSignature(pass.value);
+        if (byId("sigRemember") && byId("sigRemember").checked) { try { localStorage.setItem(SIG_STORE, sigDataUrl); } catch (e) {} }
+        applySignature();
+        hideUnlock();
+      } catch (e) { const err = byId("sigErr"); if (err) err.hidden = false; }
+    };
+    go.addEventListener("click", attempt);
+    pass.addEventListener("keydown", (e) => { if (e.key === "Enter") attempt(); });
+    skip.addEventListener("click", hideUnlock);
+  }
+
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initSignatureUI);
+  else initSignatureUI();
 })();

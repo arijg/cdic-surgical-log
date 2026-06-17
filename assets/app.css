@@ -362,12 +362,42 @@ body {
 }
 .sigcol__lbl { font-size: 8.5pt; color: #555; margin-top: 2px; letter-spacing: .02em; }
 
+/* signature unlock modal */
+.sigunlock {
+  position: fixed; inset: 0; z-index: 60;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(20, 32, 31, .45);
+  padding: 1rem;
+}
+.sigunlock[hidden] { display: none; }
+.sigunlock__box {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: 0 12px 48px rgba(0,0,0,.25);
+  padding: 1.4rem 1.5rem;
+  width: 100%; max-width: 360px;
+}
+.sigunlock__title { font-weight: 600; font-size: 1.05rem; margin-bottom: .3rem; }
+.sigunlock__hint { font-size: .82rem; color: var(--ink-soft); margin-bottom: 1rem; }
+.sigunlock__input {
+  width: 100%; font-size: .95rem; color: var(--ink);
+  background: #fbfcfc; border: 1px solid var(--line); border-radius: var(--radius-sm);
+  padding: .6rem .75rem; outline: none;
+}
+.sigunlock__input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-bg); }
+.sigunlock__remember { display: flex; align-items: center; gap: .5rem; font-size: .82rem; color: var(--ink-mid, #4a4a45); margin-top: .8rem; cursor: pointer; }
+.sigunlock__err { font-size: .8rem; color: var(--danger); margin-top: .6rem; }
+.sigunlock__actions { display: flex; justify-content: flex-end; gap: .6rem; margin-top: 1.2rem; }
+.sigunlock__actions .btn--ghost { color: var(--ink-soft); border-color: var(--line); }
+.sigunlock__actions .btn--ghost:hover { border-color: var(--ink-soft); color: var(--ink); }
+.sigunlock__actions .btn--primary { background: var(--brand); color: #fff; }
+
 /* ───────────────── Print ───────────────── */
 @page { size: letter; margin: 0.5in; }
 
 @media print {
   html, body { background: #fff !important; }
-  .topbar, .app { display: none !important; }
+  .topbar, .app, .sigunlock { display: none !important; }
   .overlay {
     position: static !important;
     display: block !important;

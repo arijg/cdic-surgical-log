@@ -210,6 +210,22 @@
   </div>
 </div>
 
+<!-- Doctor-signature unlock (passphrase-decrypts the signature in-browser) -->
+<div class="sigunlock" id="sigUnlock" hidden>
+  <div class="sigunlock__box">
+    <div class="sigunlock__title">Add doctor signature</div>
+    <p class="sigunlock__hint">Enter the passphrase to place the signature on the consent forms.</p>
+    <input class="sigunlock__input" type="password" id="sigPass" placeholder="Passphrase" autocomplete="off" />
+    <label class="sigunlock__remember"><input type="checkbox" id="sigRemember" /> Remember on this device</label>
+    <p class="sigunlock__err" id="sigErr" hidden>Incorrect passphrase — try again.</p>
+    <div class="sigunlock__actions">
+      <button class="btn btn--ghost" id="sigSkip" type="button">Skip</button>
+      <button class="btn btn--primary" id="sigGo" type="button">Unlock</button>
+    </div>
+  </div>
+</div>
+
+<script src="assets/signature-enc.js"></script>
 <script src="assets/consents.js"></script>
 <script src="assets/app.js"></script>
 </body>

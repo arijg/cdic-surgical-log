@@ -6,3 +6,8 @@
 # Source workbook — kept locally only; contains patient data, never publish
 reference/*.xlsm
 reference/*.xlsx
+
+# Doctor signature source — only the encrypted form (assets/signature-enc.js) is
+# published; keep the plaintext local for re-encryption, never commit it.
+Signature.png
+_sigtmp.jpg
