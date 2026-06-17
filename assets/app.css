@@ -217,13 +217,15 @@ body {
 .matrix tbody th { font-weight: 600; color: var(--ink-soft); padding-right: .5rem; text-align: right; white-space: nowrap; }
 .matrix__corner { font-size: .6rem !important; color: var(--ink-faint) !important; font-weight: 500 !important; text-align: right !important; padding-right: .5rem !important; }
 .matrix__cell {
-  width: 44px; height: 34px;
+  width: 62px; height: 32px;
   border: 1.5px solid var(--line);
   border-radius: 6px;
   background: #fff;
   color: var(--ink-soft);
-  font-size: .78rem;
+  font-size: .74rem;
   font-weight: 500;
+  white-space: nowrap;
+  padding: 0 2px;
   cursor: pointer;
   transition: all .1s ease;
   margin: 2px;
@@ -449,5 +451,5 @@ body {
   .card { padding: 1.15rem 1rem; }
   .grid-2 { grid-template-columns: 1fr; }
   .teeth__row { grid-template-columns: repeat(8, 1fr); }
-  .matrix__cell { width: 40px; }
+  .matrix__cell { width: 56px; font-size: .68rem; }
 }

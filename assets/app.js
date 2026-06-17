@@ -57,7 +57,7 @@
 
   const IMPLANT_SYSTEMS = {
     "Ceramic SDS One Piece":       { d: [3.3, 3.8, 4.6, 5.4],    l: [8, 11, 14] },
-    "Internal Hex 2.5 mm":         { d: [3.3, 3.75, 4.2, 5, 6],  l: [6, 8, 10, 11, 13, 16] },
+    "Internal Hex 2.5 mm":         { d: [3.3, 3.75, 4.2, 5, 6],  l: [6, 8, 10, 11.5, 13, 16] },
     "Syn-Oct with 4.8 mm Collar":  { d: [3.75, 4.1, 4.8],        l: [8, 10, 12, 14, 16] },
   };
 
