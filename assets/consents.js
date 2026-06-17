@@ -20,6 +20,24 @@
   const row = (...blocks) => `<div class="sig-row">${blocks.join("")}</div>`;
   const num = (n, txt) => `<div class="cpage__numlist"><span class="n">${n})</span><span>${txt}</span></div>`;
 
+  // ── Signature blocks: patient (left) and doctor (right), each with a Date line below.
+  // The doctor's signature image is placed automatically.
+  const DOCTOR_SIG = `<img class="sigcol__img" src="Signature.png" alt="Doctor signature">`;
+  const patientLabel = (name) => (name ? "Patient - " + esc(name) : "Patient");
+  const sigCol = (lineHtml, label, date) =>
+    `<div class="sigcol">` +
+      `<div class="sigcol__line">${lineHtml || ""}</div>` +
+      `<div class="sigcol__lbl">${label}</div>` +
+      `<div class="sigcol__date">${esc(date) || ""}</div>` +
+      `<div class="sigcol__lbl">Date</div>` +
+    `</div>`;
+  // Patient on the left, Doctor (auto-signed) on the right.
+  const sigPair = (name, date) =>
+    `<div class="sig2row">${sigCol("", patientLabel(name), date)}${sigCol(DOCTOR_SIG, "Doctor", date)}</div>`;
+  // Patient only (pages that have no doctor line).
+  const sigPatient = (name, date) =>
+    `<div class="sig2row">${sigCol("", patientLabel(name), date)}</div>`;
+
   /* ── Page 1 — Informed Consent (intro) ── */
   function page1(name, date) {
     return page(
@@ -31,8 +49,7 @@
       `<p>It is very important that you provide your dentist with accurate information before, during and after treatment. It is equally important that you follow your dentist's advice and recommendations regarding medication, pre and post treatment instructions, referrals to other dentists or specialist, and return for scheduled appointments. If you fail to follow the advice of your dentist, you may increase the chances of a poor outcome.</p>` +
       `<p>The patient is an important part of the treatment team. In addition to complying with the instructions given to you by this office, it is important to report any problems or complications you experience so they can be addressed by your dentist.</p>` +
       `<p>If you are a woman on oral birth control medication, you must consider the fact that antibiotics might make oral birth control less effective. Please consult with your physician before relying on oral birth control medication if your dentist prescribes, or if you are taking antibiotics.</p>` +
-      row(sig("Witness"), sigDate(date), sig(name ? "Patient - " + esc(name) : "Patient"), sigDate(date)) +
-      row(sig("Doctor Signature"))
+      sigPair(name, date)
     );
   }
 
@@ -60,8 +77,7 @@
       `<p>Some of the more commonly known risks and complications of treatment include, but are not limited to the following:</p>` +
       `<ol class="cpage__list">${risks.map((r) => `<li>${r}</li>`).join("")}</ol>` +
       `<p>The form is intended to provide you with an overview of potential risks and complications. Do not sign this form or agree to treatment until you have read, understood, and accepted each paragraph stated above. Please discuss the potential benefits, risks, and complications of recommended treatment with your dentist. Be certain all of your concerns have been addressed to your satisfaction by your dentist before commencing treatment.</p>` +
-      row(sig("Witness"), sigDate(date), sig(name ? "Patient - " + esc(name) : "Patient"), sigDate(date)) +
-      row(sig("Doctor Signature"))
+      sigPair(name, date)
     );
   }
 
@@ -82,8 +98,7 @@
       `<p>Arbitration will be settled and administered by the American Arbitration Association, under its Code of Procedure then in effect. Both parties will pay administrative fees and arbitrator compensation for the binding process.</p>` +
       `<p>If any provision of this Arbitration Agreement is held invalid or unenforceable, the remaining provisions remain in full force and effect and will not be affected by the invalidity of such provision.</p>` +
       `<p>The undersigned agrees that he/she waives his/her right to a trial in court for any future malpractice claim he/she may have against ${ORG}, your dentist and any other dental provider at the dental office.</p>` +
-      row(sig("Patient/Guardian Signature"), sigDate(date)) +
-      row(sig("Dentist"), sigDate(date), sig("Witness Signature"), sigDate(date))
+      sigPair(name, date)
     );
   }
 
@@ -93,7 +108,7 @@
       field("Patient Name", name) +
       `<p>I am affirming that my Informed Consent for Dental Treatment, Extractions, Implant Surgery, and Prosthetic Treatment have been given to me in oral and written form and in a language that I understand.</p>` +
       `<p>The risks and alternatives to the treatment I am consenting to have been thoroughly discussed. I have had an opportunity to ask the doctor questions and review alternative treatments. I am comfortable proceeding with the treatment.</p>` +
-      row(sig("Patient Signature"), sigDate(date))
+      sigPatient(name, date)
     );
   }
 
@@ -110,8 +125,7 @@
       num(4, "I am aware that the practice of dentistry and dental surgery is not an exact science and I acknowledge that no guarantees have been made to me concerning the success of my implant prosthesis(es) and the associated treatment and procedures. I am aware that the implant prosthesis(es) may fail, which may require further corrective actions and possible removal of said prosthesis(es).") +
       num(5, "As with any dental prosthesis(es), there are possible complications of which I have been made aware. These complications include but are not limited to the following: risk of improper fitting bridge work; risk of improper occlusion; disease develops due to improper home care or other reasons; loss of permanent teeth; loss of the prosthesis(es) and/or implant(s) if systemic disease develops, and wear or breakage of the implant component parts and/or prosthesis(es), and risk to the chewing surface material(s). This material(s) has tooth like hardness. However, just as with natural teeth, they run the risk of fracture or breakage. If damage to the material(s) occurs it may need to be repaired. The amount of damage to the prosthesis(es) will determine whether or not it may be repaired or remade. The cost to repair will vary depending on the extent of the damage. If a chip occurs it may only need to be polished. If the fracture is larger it may need resurfacing and may only last four to six months. Should the damage be excessive, it may require that the crown or the entire bridge be remade. There will be a fee to repair and/or replace the crown or bridge.") +
       num(6, "The teeth or implant(s) which support your prosthesis(es) can develop gum disease, and other dental problems, if proper care is NOT given to them. Professional preventive maintenance visits and professional cleanings, are mandatory every three to four months. Home care, brushing and flossing should be performed three times daily. It is your (the patient's) responsibility to complete home care and schedule regular maintenance visits with this office.") +
-      row(sig("Doctors Signature"), sigDate(date), sig("Patient Signature"), sigDate(date)) +
-      row(sig("Witness Signature"), sigDate(date))
+      sigPair(name, date)
     );
   }
 
@@ -126,8 +140,7 @@
       `<div class="cpage__h">IN SUMMARY</div>` +
       num(9, "I understand that sometime after insertion the implant(s) will be uncovered and/or implant head(s) will be placed into the implant(s). The restoring dentist will restore the implant(s) using routine dental procedures and make a prosthesis(es) that will be attached to the implant(s). The problems with having or wearing this prosthesis(es) have been explained to me. I may lose the implant(s) once it has been placed or the prosthesis(es) may fracture, wear or parts may break and need to be replaced at my cost. In addition, it has been explained to me that the prosthesis(es) will either be cemented or placed in position by screws. These screws can come loose and/or break and may need to be replaced at any time. There will be a charge to remedy these situations. It has been further explained to me the need for meticulous home care. The tissue around the implant(s) may become irritated. I may need additional surgery to insure the health of the implant(s). Possible oral hygiene regimes have been explained to me and I have been told what type of dental care devices I may need. Preventive maintenance procedures have been explained to me and I know that I should come back to visit the dentist who has placed the restorations at least three times a year. As with all other dental procedures, no guarantee can be given as to the longevity of this procedure. It should be noted that I have read this, clearly understand this, and I have had all this information explained to me. I have had all my questions answered by the dentist and have no remaining substantive questions relative to this information or my treatment.") +
       field("Patient's Name", name) +
-      row(sig("Patient Signature"), sigDate(date)) +
-      row(sig("Doctors Signature"), sig("Witness Signature"), sigDate(date))
+      sigPair(name, date)
     );
   }
 
@@ -148,8 +161,7 @@
       num(10, "I consent to photography, filming, recording, and x-rays of the procedure to be performed for the advancement of implant dentistry, provided my identity is not revealed.") +
       num(11, "I request and authorize medical/dental services for me, including implants and other surgery. I fully understand that during, and following the contemplated procedure, surgery, or treatment, conditions may become apparent which warrant, in the judgment of the doctor, additional or alternative treatment pertinent to the success of comprehensive treatment. I also approve any modification in design, materials, or care, if it is felt this is for my best interest.") +
       field("Patient's Name", name) +
-      row(sig("Patient Signature"), sigDate(date)) +
-      row(sig("Doctors Signature"), sig("Witness Signature"), sigDate(date))
+      sigPair(name, date)
     );
   }
 

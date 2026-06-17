@@ -335,6 +335,33 @@ body {
 .sig__line { border-bottom: 1px solid #000; min-height: 1.25rem; padding: 0 2px 1px; font-size: 10.5pt; }
 .sig__lbl { font-size: 8.5pt; color: #555; margin-top: 2px; letter-spacing: .02em; }
 
+/* signature columns — patient (left) + doctor (right), date below each */
+.sig2row { display: flex; gap: 2.5rem; margin-top: 1.4rem; }
+.sigcol { flex: 0 1 3in; max-width: 3in; }
+.sigcol__line {
+  border-bottom: 1px solid #000;
+  height: 0.5in;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+}
+.sigcol__img {
+  max-height: 0.46in;
+  max-width: 100%;
+  margin-bottom: 1px;
+  mix-blend-mode: multiply; /* drop the near-white scan background on white paper */
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+.sigcol__date {
+  border-bottom: 1px solid #000;
+  min-height: 1.25rem;
+  margin-top: 1rem;
+  padding: 0 2px 1px;
+  font-size: 10.5pt;
+}
+.sigcol__lbl { font-size: 8.5pt; color: #555; margin-top: 2px; letter-spacing: .02em; }
+
 /* ───────────────── Print ───────────────── */
 @page { size: letter; margin: 0.5in; }
 
