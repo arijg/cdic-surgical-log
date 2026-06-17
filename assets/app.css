@@ -281,7 +281,7 @@ body {
 .note__meta span { color: #333; }
 
 .note__section { margin-bottom: .7rem; }
-.note__h { font-size: 8.5pt; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #444; margin-bottom: .15rem; }
+.note__h { font-size: 8.5pt; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #111; margin-bottom: .15rem; }
 .note__p { font-size: 11pt; line-height: 1.5; color: #111; margin: 0; }
 .note__p + .note__p { margin-top: .35rem; }
 
