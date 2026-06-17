@@ -305,7 +305,7 @@ body {
 .overlay.mode-consents #note { display: none; }
 .overlay.mode-consents #consentDoc { display: flex; }
 
-.consent-doc { flex-direction: column; align-items: center; gap: 1.5rem; }
+.consent-doc { flex-direction: column; align-items: center; gap: 1.5rem; width: 100%; min-width: 0; }
 .consent-page {
   width: 8.5in;
   max-width: 100%;
@@ -444,8 +444,12 @@ body {
 
 /* ───────────────── Responsive ───────────────── */
 @media (max-width: 620px) {
-  .topbar { padding: .75rem 1rem; padding-top: max(.75rem, env(safe-area-inset-top)); }
-  .topbar__actions .btn { padding: .45rem .8rem; font-size: .76rem; }
+  /* Stack: brand on its own row, actions wrap to a full-width row below */
+  .topbar { padding: .7rem 1rem; padding-top: max(.7rem, env(safe-area-inset-top)); flex-wrap: wrap; gap: .6rem; }
+  .topbar__brand { flex: 1 1 100%; }
+  .topbar__title { white-space: nowrap; }
+  .topbar__actions { width: 100%; justify-content: flex-end; gap: .5rem; }
+  .topbar__actions .btn { padding: .5rem .9rem; font-size: .8rem; }
   .topbar__actions #resetBtn { display: none; }
   .app { padding: 1rem .85rem 4rem; }
   .card { padding: 1.15rem 1rem; }
