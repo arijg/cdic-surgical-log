@@ -220,6 +220,12 @@
       img.src = sigDataUrl;
       img.hidden = false;
     });
+    // Re-fit the page once the signature is in place — after a frame, after web
+    // fonts settle, and after a short delay — so the fit can't be left stale.
+    const refit = () => { if (window.refitPreview) window.refitPreview(); };
+    requestAnimationFrame(refit);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => requestAnimationFrame(refit));
+    setTimeout(refit, 400);
   }
   // Silent apply (no passphrase prompt) — used when a document is re-rendered.
   window.applyDoctorSignatures = function () {

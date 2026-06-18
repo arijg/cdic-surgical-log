@@ -400,8 +400,11 @@ body {
 .sigunlock__actions .btn--ghost:hover { border-color: var(--ink-soft); color: var(--ink); }
 .sigunlock__actions .btn--primary { background: var(--brand); color: #fff; }
 
-/* ───────────────── Print ───────────────── */
-@page { size: letter; margin: 0.5in; }
+/* ───────────────── Print ─────────────────
+   @page margin is 0 so each document's own padding provides the page margin.
+   This keeps the on-screen preview geometry identical to the printed output, so
+   the single-page auto-fit (app.js) is exact and pages don't spill. */
+@page { size: letter; margin: 0; }
 
 @media print {
   html, body { background: #fff !important; }
@@ -414,30 +417,30 @@ body {
   .overlay__bar { display: none !important; }
   .overlay__scroll { display: block !important; padding: 0 !important; overflow: visible !important; }
   .note {
-    width: auto !important;
+    width: 8.5in !important;
     max-width: none !important;
     min-height: 0 !important;
     box-shadow: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
+    margin: 0 auto !important;
+    /* keep the on-screen padding — it is the printed margin */
   }
 
   /* show only the active document */
   .overlay:not(.mode-consents) #consentDoc { display: none !important; }
   .overlay.mode-consents #note { display: none !important; }
 
-  /* consent packet: one Excel page = one printed page */
+  /* consent packet: one form = one printed page */
   .overlay.mode-consents #consentDoc { display: block !important; }
   .consent-doc { gap: 0 !important; }
   .consent-page {
-    width: auto !important;
+    width: 8.5in !important;
     max-width: none !important;
     min-height: 0 !important;
     box-shadow: none !important;
-    padding: 0 !important;
-    margin: 0 !important;
+    margin: 0 auto !important;
     page-break-after: always;
     break-after: page;
+    /* keep the on-screen padding — it is the printed margin */
   }
   .consent-page:last-child { page-break-after: auto; break-after: auto; }
 }

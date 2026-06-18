@@ -474,14 +474,39 @@
     document.title = t;
   }
 
-  /* ---------- Fit the note onto a single Letter page ---------- */
-  function fitNote() {
-    const note = $("#note");
-    note.style.zoom = "";
-    const pageH = 11 * 96; // 1in = 96px in print
-    const h = note.scrollHeight;
-    if (h > pageH) note.style.zoom = Math.max(0.55, pageH / h);
+  /* ---------- Fit a document onto a single Letter sheet ----------
+     Target is just under 11in for safety. min-height is temporarily removed so
+     we measure true content height (not the 11in preview min-height). With the
+     @page margin at 0, the element's own padding is the printed margin, so the
+     on-screen measurement matches the printed height exactly. */
+  const PAGE_FIT_PX = 11 * 96 - 48;
+
+  function fitToPage(el) {
+    el.style.zoom = "";
+    const prevMin = el.style.minHeight;
+    el.style.minHeight = "0";
+    const h = el.scrollHeight;
+    el.style.minHeight = prevMin;
+    if (h > PAGE_FIT_PX) el.style.zoom = Math.max(0.45, PAGE_FIT_PX / h);
   }
+  function fitNote() { fitToPage($("#note")); }
+  function fitConsentPages() { $$("#consentDoc .consent-page").forEach(fitToPage); }
+
+  // Re-fit after web fonts load and a layout frame flushes (text height shifts
+  // when the fonts arrive), so a near-boundary page can't tip onto a 2nd sheet.
+  function fitWhenReady(fn) {
+    fn();
+    requestAnimationFrame(fn);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => requestAnimationFrame(fn));
+    setTimeout(fn, 400); // catch late font/layout settling so the fit isn't stale
+  }
+  // Re-fit the active preview — called after the doctor signature is applied.
+  window.refitPreview = function () {
+    const ov = $("#previewOverlay");
+    if (!ov.classList.contains("open")) return;
+    if (ov.classList.contains("mode-consents")) fitConsentPages();
+    else fitNote();
+  };
 
   /* ---------- Preview / export ---------- */
   function openPreview() {
@@ -491,7 +516,7 @@
     ov.classList.add("open");
     ov.setAttribute("aria-hidden", "false");
     $("#overlayTitle").textContent = "Surgical log — preview";
-    fitNote();
+    fitWhenReady(fitNote);
     ov.querySelector(".overlay__scroll").scrollTop = 0;
     if (window.fillDoctorSignatures) window.fillDoctorSignatures();
   }
@@ -504,17 +529,9 @@
     ov.classList.add("mode-consents", "open");
     ov.setAttribute("aria-hidden", "false");
     $("#overlayTitle").textContent = "Consent forms — preview";
-    fitConsentPages();
+    fitWhenReady(fitConsentPages);
     ov.querySelector(".overlay__scroll").scrollTop = 0;
     if (window.fillDoctorSignatures) window.fillDoctorSignatures();
-  }
-  function fitConsentPages() {
-    const pageH = 11 * 96;
-    $$("#consentDoc .consent-page").forEach((pg) => {
-      pg.style.zoom = "";
-      const h = pg.scrollHeight;
-      if (h > pageH) pg.style.zoom = Math.max(0.5, pageH / h);
-    });
   }
   function closePreview() {
     const ov = $("#previewOverlay");
