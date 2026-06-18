@@ -481,16 +481,44 @@
      on-screen measurement matches the printed height exactly. */
   const PAGE_FIT_PX = 11 * 96 - 48;
 
+  // Measure an element at the true PRINT width (8.5in), regardless of the screen
+  // viewport — on a phone the page is shrunk by max-width:100%, which would make
+  // text wrap taller and corrupt the fit. Returns the measured content height.
+  function measureAtPrintWidth(el, fn) {
+    const prev = { minH: el.style.minHeight, w: el.style.width, maxW: el.style.maxWidth };
+    el.style.minHeight = "0";
+    el.style.width = "8.5in";
+    el.style.maxWidth = "none";
+    const result = fn();
+    el.style.minHeight = prev.minH;
+    el.style.width = prev.w;
+    el.style.maxWidth = prev.maxW;
+    return result;
+  }
+
   function fitToPage(el) {
     el.style.zoom = "";
-    const prevMin = el.style.minHeight;
-    el.style.minHeight = "0";
-    const h = el.scrollHeight;
-    el.style.minHeight = prevMin;
+    const h = measureAtPrintWidth(el, () => el.scrollHeight);
     if (h > PAGE_FIT_PX) el.style.zoom = Math.max(0.45, PAGE_FIT_PX / h);
   }
   function fitNote() { fitToPage($("#note")); }
-  function fitConsentPages() { $$("#consentDoc .consent-page").forEach(fitToPage); }
+
+  // Consent pages fit by shrinking the ACTUAL font size (real layout reflow),
+  // not CSS zoom — print engines (notably iOS Safari) don't reliably honor zoom
+  // for pagination, which left near-blank spill pages between forms.
+  const CONSENT_BASE_PT = 10.5; // matches .consent-page font-size in CSS
+  function fitConsentPage(pg) {
+    pg.style.zoom = "";
+    pg.style.fontSize = ""; // reset to the CSS base
+    measureAtPrintWidth(pg, () => {
+      let scale = 1;
+      while (pg.scrollHeight > PAGE_FIT_PX && scale > 0.6) {
+        scale -= 0.03;
+        pg.style.fontSize = (CONSENT_BASE_PT * scale).toFixed(2) + "pt";
+      }
+    });
+  }
+  function fitConsentPages() { $$("#consentDoc .consent-page").forEach(fitConsentPage); }
 
   // Re-fit after web fonts load and a layout frame flushes (text height shifts
   // when the fonts arrive), so a near-boundary page can't tip onto a 2nd sheet.
